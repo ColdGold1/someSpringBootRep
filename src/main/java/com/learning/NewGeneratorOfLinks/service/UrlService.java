@@ -3,35 +3,50 @@ package com.learning.NewGeneratorOfLinks.service;
 import com.learning.NewGeneratorOfLinks.models.Url;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Service
 public class UrlService {
-    private final List<Url> urls = new ArrayList<>();
 
-    UrlService() {
-        urls.add(new Url("https://habr.com/ru/companies/piter/articles/676394/"));
-        urls.add(new Url("https://for-each.dev/lessons/b/-lombok-builder"));
+    private final HashMap<String, String> urls = new HashMap<>();
+
+    public UrlService() {
+
+        urls.put(findUniqueUrl(), "https://habr.com/ru/companies/piter/articles/676394/");
+        urls.put(findUniqueUrl(), "https://for-each.dev/lessons/b/-lombok-builder");
     }
 
-    public List<Url> getUrls() {
+    public Map<String, String> getUrls() {
         return urls;
     }
 
-    public Url addUrl(String fullUrl) {
-        Url url = new Url(fullUrl);
-        urls.add(url);
-        return url;
+    public Map.Entry<String, String> addUrl(String fullUrl) {
+        if (fullUrl == null || fullUrl.isEmpty()) {
+            return null;
+        }
+        if (urls.containsValue(fullUrl)) {
+            for (Map.Entry<String, String> url : urls.entrySet())
+                if (url.getValue().equals(fullUrl)) {
+                    return url;
+                }
+        }
+        String shortUrl = findUniqueUrl();
+        urls.put(shortUrl, fullUrl);
+        return new AbstractMap.SimpleEntry<>(shortUrl, urls.get(shortUrl));
     }
 
-    public String findUrl(String shortUrl) {
-        for (Url url : urls) {
-            if (url.getShortUrl().equals(shortUrl)) {
-                return url.getFullUrl();
-            }
-        }
-        return "There is no such url";
+    public String getFullUrl(String shortUrl) {
+        return urls.get(shortUrl);
     }
+
+    public String findUniqueUrl() {
+        StringBuilder result = new StringBuilder();
+        do {
+            result.delete(0, result.length());
+            result.append(Url.makeShortUrl());
+        } while (urls.containsKey(result.toString()));
+        return result.toString();
+    }
+
 }

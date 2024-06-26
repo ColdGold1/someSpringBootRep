@@ -13,9 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Map;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class MainControllerTest {
@@ -29,18 +31,17 @@ class MainControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUpMock(){
+    void setUpMock() {
         mockMvc = MockMvcBuilders.standaloneSetup(mainController).build();
     }
 
     @Test
     void findUrl() throws Exception {
-        Url url = urlService.addUrl("newUrl");
-        System.out.println(url.getFullUrl());
-        System.out.println(url.getShortUrl());
-        when(urlService.findUrl(url.getShortUrl())).thenReturn(url.getFullUrl());
-        mockMvc.perform(get("/urls/findUrl/{shortUrl}"))
-               .andExpect(status().isOk());
-        verify(urlService,times(1)).findUrl(url.getShortUrl());
+        String shortUrl = "123aBc";
+        String fullUrl = "https://docs.spring.io/spring-boot/docs/2.1.13.RELEASE/reference/html/production-ready-endpoints.html";
+        when(urlService.getFullUrl(shortUrl)).thenReturn(fullUrl);
+        mockMvc.perform(get("/urls/getFullUrl/{shortUrl}", shortUrl))
+                .andExpect(redirectedUrl(fullUrl));
+        verify(urlService, times(1)).getFullUrl(shortUrl);
     }
 }

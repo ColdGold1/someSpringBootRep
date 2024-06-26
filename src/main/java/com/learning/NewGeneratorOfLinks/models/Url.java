@@ -8,7 +8,7 @@ import java.util.Random;
 @Data
 public class Url {
 
-    private String fullUrl;
+    /*private String fullUrl;
     private String shortUrl;
 
     public Url() {
@@ -22,9 +22,9 @@ public class Url {
     public Url(String fullUrl) {
         this.fullUrl = fullUrl;
         shortUrl = makeShortUrl();
-    }
+    }*/
 
-    private String makeShortUrl() {
+    public static String makeShortUrl() {
         StringBuilder newShortUrl = new StringBuilder();
         String s = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ0123456789";
         Random random = new Random();

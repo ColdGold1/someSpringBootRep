@@ -1,10 +1,11 @@
 package com.learning.NewGeneratorOfLinks.service;
 
 
-import com.learning.NewGeneratorOfLinks.models.Url;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 class UrlServiceTest {
    private UrlService urlService;
@@ -15,17 +16,17 @@ class UrlServiceTest {
    }
 
    @Test
-   public void test_findUrl_returningUrl(){
+   public void test_getFullUrl_returningUrl(){
       String fullUrl = "https://wago.io/";
-      Url url = urlService.addUrl(fullUrl);
-      String result = urlService.findUrl(url.getShortUrl());
+      Map.Entry<String,String> url = urlService.addUrl(fullUrl);
+      String result = urlService.getFullUrl(url.getKey());
       Assertions.assertEquals(fullUrl,result);
    }
 
    @Test
-   public void test_findUrl_returningNothing(){
+   public void test_getFullUrl_returningNothing(){
       String fullUrl = "https://wago.io/";
-      String result = urlService.findUrl("...");
+      String result = urlService.getFullUrl("...");
       Assertions.assertNotEquals(fullUrl,result);
    }
 }
